@@ -1,4 +1,4 @@
-# gocircular - CircularBuffer for Go
+# gocircular — CircularBuffer for Go
 
 [![GoDoc](https://godoc.org/github.com/rvncerr/gocircular?status.svg)](http://godoc.org/github.com/rvncerr/gocircular)
 
