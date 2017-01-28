@@ -1,6 +1,7 @@
 package gocircular
 
 // CircularBuffer is the basic class in gocircular.
+// There are no public members in this struct.
 type CircularBuffer struct {
 	buffer []interface{}
 	shift  int
@@ -16,7 +17,7 @@ func New(size int) CircularBuffer {
 	return cb
 }
 
-// Full returns true if CircularBuffer is full.
+// Full checks if CircularBuffer is full.
 func (cb *CircularBuffer) Full() bool {
 	return cb.size == len(cb.buffer)
 }
@@ -31,27 +32,61 @@ func (cb *CircularBuffer) Size() int {
 	return cb.size
 }
 
-// Pop removes first element from CircularBuffer.
-func (cb *CircularBuffer) Pop() {
+// Capacity returns the maximum possible number elements in CircularBuffer.
+func (cb *CircularBuffer) Capacity() int {
+	return len(cb.buffer)
+}
+
+// Front returns the front element in CircularBuffer.
+func (cb *CircularBuffer) Front() interface{} {
+	if cb.Empty() {
+		panic("Calling Front() on an empty CircularBuffer.")
+	}
+	return cb.buffer[cb.shift]
+}
+
+// Back returns the back element in CircularBuffer.
+func (cb *CircularBuffer) Back() interface{} {
+	if cb.Empty() {
+		panic("Calling Back() on an empty CircularBuffer.")
+	}
+	return cb.buffer[(cb.shift+cb.size-1)%len(cb.buffer)]
+}
+
+// PopFront removes front element from CircularBuffer.
+func (cb *CircularBuffer) PopFront() {
 	if !cb.Empty() {
 		cb.size = cb.size - 1
 		cb.shift = (cb.shift + 1) % len(cb.buffer)
 	}
 }
 
-// Push appends new element into CircularBuffer.
-// If CircularBuffer is full, Pop() will be called.
-func (cb *CircularBuffer) Push(value interface{}) {
-	if cb.Full() {
-		cb.Pop()
+// PopBack removes back element from CircularBuffer.
+func (cb *CircularBuffer) PopBack() {
+	if !cb.Empty() {
+		cb.size = cb.size - 1
 	}
-	cb.buffer[(cb.size+cb.shift)%len(cb.buffer)] = value
+}
+
+// PushFront appends new element into CircularBuffer.
+// If CircularBuffer is full, PopBack() will be called.
+func (cb *CircularBuffer) PushFront(value interface{}) {
+	if cb.Full() {
+		cb.PopBack()
+	}
+	cb.buffer[(cb.shift-1)%len(cb.buffer)] = value
+	cb.shift = (cb.shift - 1) % len(cb.buffer)
 	cb.size = cb.size + 1
 }
 
-// Head returns the first element of CircularBuffer.
-func (cb *CircularBuffer) Head() interface{} {
-	return cb.buffer[cb.shift]
+// PushBack appends new element into CircularBuffer.
+// If CircularBuffer is full, PopFront() will be called.
+func (cb *CircularBuffer) PushBack(value interface{}) {
+	if cb.Full() {
+		cb.PopFront()
+	}
+	cb.buffer[(cb.size+cb.shift)%len(cb.buffer)] = value
+	cb.size = cb.size + 1
 }
 
 // ToArray converts CircularBuffer to Array.
