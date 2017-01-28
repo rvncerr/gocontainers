@@ -7,8 +7,8 @@ type CircularBuffer struct {
 	size   int
 }
 
-// NewCircularBuffer is the constructor function for CircularBuffer.
-func NewCircularBuffer(size int) CircularBuffer {
+// New is the constructor function for CircularBuffer.
+func New(size int) CircularBuffer {
 	var cb CircularBuffer
 	cb.buffer = make([]interface{}, size)
 	cb.shift = 0
@@ -24,6 +24,11 @@ func (cb *CircularBuffer) Full() bool {
 // Empty checks if CircularBuffer has no elements.
 func (cb *CircularBuffer) Empty() bool {
 	return cb.size == 0
+}
+
+// Size returns number of elements in CircularBuffer.
+func (cb *CircularBuffer) Size() int {
+	return cb.size
 }
 
 // Pop removes first element from CircularBuffer.
