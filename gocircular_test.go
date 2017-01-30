@@ -8,6 +8,38 @@ import (
 	"github.com/rvncerr/goassert"
 )
 
+func ExampleCircularBuffer_Full() {
+	cb := New(4)
+
+	cb.PushBack(0)
+	cb.PushBack(1)
+	fmt.Printf("%v\n", cb.Full())
+	cb.PushBack(2)
+	cb.PushBack(3)
+	fmt.Printf("%v\n", cb.Full())
+
+	// Output:
+	// false
+	// true
+}
+
+func ExampleCircularBuffer_Empty() {
+	cb := New(4)
+
+	fmt.Printf("%v\n", cb.Empty())
+	cb.PushBack(0)
+	cb.PushBack(1)
+	fmt.Printf("%v\n", cb.Empty())
+	cb.PopFront()
+	cb.PopFront()
+	fmt.Printf("%v\n", cb.Empty())
+
+	// Output:
+	// true
+	// false
+	// true
+}
+
 func ExampleCircularBuffer_PushBack() {
 	cb := New(4)
 
