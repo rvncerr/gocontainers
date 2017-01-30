@@ -90,6 +90,13 @@ func (cb *CircularBuffer) PushBack(value interface{}) {
 	cb.size = cb.size + 1
 }
 
+// Do calls function f on each element of the CircularBuffer.
+func (cb *CircularBuffer) Do(f func(interface{})) {
+	for i := 0; i < cb.size; i++ {
+		f(cb.buffer[(cb.shift+i)%len(cb.buffer)])
+	}
+}
+
 // ToArray converts CircularBuffer to Array.
 func (cb *CircularBuffer) ToArray() []interface{} {
 	array := make([]interface{}, cb.size)

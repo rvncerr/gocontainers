@@ -72,6 +72,31 @@ func ExampleCircularBuffer_PushFront() {
 	// Output: [5 4 3 2]
 }
 
+/* func do(element interface{}) {
+	fmt.Printf("---> %v <---\n", element)
+} */
+
+func ExampleCircularBuffer_Do() {
+	var do = func(element interface{}) {
+		fmt.Printf("---> %v <---\n", element)
+	}
+
+	cb := New(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+
+	cb.Do(do)
+
+	// Output:
+	// ---> 0 <---
+	// ---> 1 <---
+	// ---> 2 <---
+	// ---> 3 <---
+}
+
 func TestIntegers(t *testing.T) {
 	ga := goassert.New(t)
 	cb := New(4)
