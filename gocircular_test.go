@@ -11,12 +11,12 @@ import (
 func ExampleCircularBuffer_PushBack() {
 	cb := New(4)
 
-	cb.PushBack(0)
-	cb.PushBack(1)
-	cb.PushBack(2)
-	cb.PushBack(3)
-	cb.PushBack(4)
-	cb.PushBack(5)
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
 
 	fmt.Printf("%v\n", cb.ToArray())
 	// Output: [2 3 4 5]
@@ -25,12 +25,12 @@ func ExampleCircularBuffer_PushBack() {
 func ExampleCircularBuffer_PushFront() {
 	cb := New(4)
 
-	cb.PushFront(0)
-	cb.PushFront(1)
-	cb.PushFront(2)
-	cb.PushFront(3)
-	cb.PushFront(4)
-	cb.PushFront(5)
+	cb.PushFront(0) // [0 _ _ _]
+	cb.PushFront(1) // [1 0 _ _]
+	cb.PushFront(2) // [2 1 0 _]
+	cb.PushFront(3) // [3 2 1 0]
+	cb.PushFront(4) // [4 3 2 1]
+	cb.PushFront(5) // [5 4 3 2]
 
 	fmt.Printf("%v\n", cb.ToArray())
 	// Output: [5 4 3 2]
