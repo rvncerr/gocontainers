@@ -17,9 +17,13 @@ func ExampleCircularBuffer_Full() {
 	cb.PushBack(2)
 	cb.PushBack(3)
 	fmt.Printf("%v\n", cb.Full())
+	cb.PushBack(4)
+	cb.PushBack(5)
+	fmt.Printf("%v\n", cb.Full())
 
 	// Output:
 	// false
+	// true
 	// true
 }
 
