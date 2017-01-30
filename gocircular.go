@@ -74,8 +74,9 @@ func (cb *CircularBuffer) PushFront(value interface{}) {
 	if cb.Full() {
 		cb.PopBack()
 	}
-	cb.buffer[(cb.shift-1)%len(cb.buffer)] = value
-	cb.shift = (cb.shift - 1) % len(cb.buffer)
+	index := (cb.shift + len(cb.buffer) - 1) % len(cb.buffer)
+	cb.buffer[index] = value
+	cb.shift = index
 	cb.size = cb.size + 1
 }
 

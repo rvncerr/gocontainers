@@ -22,6 +22,20 @@ func ExampleCircularBuffer_PushBack() {
 	// Output: [2 3 4 5]
 }
 
+func ExampleCircularBuffer_PushFront() {
+	cb := New(4)
+
+	cb.PushFront(0)
+	cb.PushFront(1)
+	cb.PushFront(2)
+	cb.PushFront(3)
+	cb.PushFront(4)
+	cb.PushFront(5)
+
+	fmt.Printf("%v\n", cb.ToArray())
+	// Output: [5 4 3 2]
+}
+
 func TestIntegers(t *testing.T) {
 	ga := goassert.New(t)
 	cb := New(4)
