@@ -1,11 +1,26 @@
 package gocircular
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 
 	"github.com/rvncerr/goassert"
 )
+
+func ExampleCircularBuffer_PushBack() {
+	cb := New(4)
+
+	cb.PushBack(0)
+	cb.PushBack(1)
+	cb.PushBack(2)
+	cb.PushBack(3)
+	cb.PushBack(4)
+	cb.PushBack(5)
+
+	fmt.Printf("%v\n", cb.ToArray())
+	// Output: [2 3 4 5]
+}
 
 func TestIntegers(t *testing.T) {
 	ga := goassert.New(t)
