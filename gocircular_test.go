@@ -7,6 +7,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func ExampleCircularBuffer_At() {
+	cb := New(4)
+	cb.PushBack(0)
+	cb.PushBack(1)
+	cb.PushBack(2)
+	cb.PushBack(3)
+	cb.PushBack(4)
+	cb.PushBack(5)
+	fmt.Printf("%v_%v_%v_%v\n", cb.At(0), cb.At(1), cb.At(2), cb.At(3))
+
+	// Output: 2_3_4_5
+}
+
 func ExampleCircularBuffer_Full() {
 	cb := New(4)
 

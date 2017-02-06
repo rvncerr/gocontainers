@@ -37,12 +37,17 @@ func (cb *CircularBuffer) Capacity() int {
 	return len(cb.buffer)
 }
 
+// At returns element from CircularBuffer by index.
+func (cb *CircularBuffer) At(index int) interface{} {
+	return cb.buffer[(cb.shift+index)%len(cb.buffer)]
+}
+
 // Front returns the front element in CircularBuffer.
 func (cb *CircularBuffer) Front() interface{} {
 	if cb.Empty() {
 		panic("Calling Front() on an empty CircularBuffer.")
 	}
-	return cb.buffer[cb.shift]
+	return cb.At(0)
 }
 
 // Back returns the back element in CircularBuffer.
@@ -50,7 +55,7 @@ func (cb *CircularBuffer) Back() interface{} {
 	if cb.Empty() {
 		panic("Calling Back() on an empty CircularBuffer.")
 	}
-	return cb.buffer[(cb.shift+cb.size-1)%len(cb.buffer)]
+	return cb.At(cb.Size() - 1)
 }
 
 // PopFront removes front element from CircularBuffer.
@@ -93,7 +98,7 @@ func (cb *CircularBuffer) PushBack(value interface{}) {
 // Do calls function f on each element of the CircularBuffer.
 func (cb *CircularBuffer) Do(f func(interface{})) {
 	for i := 0; i < cb.size; i++ {
-		f(cb.buffer[(cb.shift+i)%len(cb.buffer)])
+		f(cb.At(i))
 	}
 }
 
@@ -101,7 +106,7 @@ func (cb *CircularBuffer) Do(f func(interface{})) {
 func (cb *CircularBuffer) ToArray() []interface{} {
 	array := make([]interface{}, cb.size)
 	for i := 0; i < cb.size; i++ {
-		array[i] = cb.buffer[(cb.shift+i)%len(cb.buffer)]
+		array[i] = cb.At(i)
 	}
 	return array
 }
