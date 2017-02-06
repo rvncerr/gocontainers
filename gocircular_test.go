@@ -128,6 +128,42 @@ func ExampleCircularBuffer_Full() {
 	// true
 }
 
+func ExampleCircularBuffer_PopBack() {
+	cb := New(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	cb.PopBack() // [2 3 4 _]
+	cb.PopBack() // [2 3 _ _]
+
+	fmt.Printf("%v\n", cb.ToArray())
+
+	// Output: [2 3]
+}
+
+func ExampleCircularBuffer_PopFront() {
+	cb := New(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	cb.PopFront() // [3 4 5 _]
+	cb.PopFront() // [4 5 _ _]
+
+	fmt.Printf("%v\n", cb.ToArray())
+
+	// Output: [4 5]
+}
+
 func ExampleCircularBuffer_PushBack() {
 	cb := New(4)
 
@@ -139,6 +175,7 @@ func ExampleCircularBuffer_PushBack() {
 	cb.PushBack(5) // [2 3 4 5]
 
 	fmt.Printf("%v\n", cb.ToArray())
+
 	// Output: [2 3 4 5]
 }
 

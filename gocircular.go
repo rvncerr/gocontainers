@@ -60,9 +60,11 @@ func (cb *CircularBuffer) Full() bool {
 	return cb.size == len(cb.buffer)
 }
 
-// Size returns number of elements in CircularBuffer.
-func (cb *CircularBuffer) Size() int {
-	return cb.size
+// PopBack removes back element from CircularBuffer.
+func (cb *CircularBuffer) PopBack() {
+	if !cb.Empty() {
+		cb.size = cb.size - 1
+	}
 }
 
 // PopFront removes front element from CircularBuffer.
@@ -73,11 +75,9 @@ func (cb *CircularBuffer) PopFront() {
 	}
 }
 
-// PopBack removes back element from CircularBuffer.
-func (cb *CircularBuffer) PopBack() {
-	if !cb.Empty() {
-		cb.size = cb.size - 1
-	}
+// Size returns number of elements in CircularBuffer.
+func (cb *CircularBuffer) Size() int {
+	return cb.size
 }
 
 // PushFront appends new element into CircularBuffer.
