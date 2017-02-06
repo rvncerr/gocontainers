@@ -193,11 +193,7 @@ func ExampleCircularBuffer_PushFront() {
 	// Output: [5 4 3 2]
 }
 
-/* func do(element interface{}) {
-	fmt.Printf("---> %v <---\n", element)
-} */
-
-func TestIntegers(t *testing.T) {
+func TestBasic(t *testing.T) {
 	assert := assert.New(t)
 	cb := New(4)
 
@@ -245,4 +241,26 @@ func TestIntegers(t *testing.T) {
 	assert.Equal(cb.ToArray(), []interface{}{9, 8}, "{9, 8}")
 	assert.Equal(cb.Front(), interface{}(9), "9 | 8")
 	assert.Equal(cb.Size(), 2, "len({9, 8}) = 2")
+}
+
+func TestPanicFront(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Front did not panic.")
+		}
+	}()
+
+	cb := New(4)
+	cb.Front()
+}
+
+func TestPanicBack(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Errorf("Back did not panic.")
+		}
+	}()
+
+	cb := New(4)
+	cb.Back()
 }
