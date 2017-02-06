@@ -47,6 +47,14 @@ func (cb *CircularBuffer) Empty() bool {
 	return cb.size == 0
 }
 
+// Front returns the front element in CircularBuffer.
+func (cb *CircularBuffer) Front() interface{} {
+	if cb.Empty() {
+		panic("Calling Front() on an empty CircularBuffer.")
+	}
+	return cb.At(0)
+}
+
 // Full checks if CircularBuffer is full.
 func (cb *CircularBuffer) Full() bool {
 	return cb.size == len(cb.buffer)
@@ -55,14 +63,6 @@ func (cb *CircularBuffer) Full() bool {
 // Size returns number of elements in CircularBuffer.
 func (cb *CircularBuffer) Size() int {
 	return cb.size
-}
-
-// Front returns the front element in CircularBuffer.
-func (cb *CircularBuffer) Front() interface{} {
-	if cb.Empty() {
-		panic("Calling Front() on an empty CircularBuffer.")
-	}
-	return cb.At(0)
 }
 
 // PopFront removes front element from CircularBuffer.
