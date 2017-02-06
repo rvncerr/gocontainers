@@ -75,9 +75,14 @@ func (cb *CircularBuffer) PopFront() {
 	}
 }
 
-// Size returns number of elements in CircularBuffer.
-func (cb *CircularBuffer) Size() int {
-	return cb.size
+// PushBack appends new element into CircularBuffer.
+// If CircularBuffer is full, PopFront() will be called.
+func (cb *CircularBuffer) PushBack(value interface{}) {
+	if cb.Full() {
+		cb.PopFront()
+	}
+	cb.buffer[(cb.size+cb.shift)%len(cb.buffer)] = value
+	cb.size = cb.size + 1
 }
 
 // PushFront appends new element into CircularBuffer.
@@ -92,14 +97,9 @@ func (cb *CircularBuffer) PushFront(value interface{}) {
 	cb.size = cb.size + 1
 }
 
-// PushBack appends new element into CircularBuffer.
-// If CircularBuffer is full, PopFront() will be called.
-func (cb *CircularBuffer) PushBack(value interface{}) {
-	if cb.Full() {
-		cb.PopFront()
-	}
-	cb.buffer[(cb.size+cb.shift)%len(cb.buffer)] = value
-	cb.size = cb.size + 1
+// Size returns number of elements in CircularBuffer.
+func (cb *CircularBuffer) Size() int {
+	return cb.size
 }
 
 // ToArray converts CircularBuffer to Array.

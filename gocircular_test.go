@@ -190,6 +190,7 @@ func ExampleCircularBuffer_PushFront() {
 	cb.PushFront(5) // [5 4 3 2]
 
 	fmt.Printf("%v\n", cb.ToArray())
+
 	// Output: [5 4 3 2]
 }
 
