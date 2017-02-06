@@ -9,15 +9,40 @@ import (
 
 func ExampleCircularBuffer_At() {
 	cb := New(4)
-	cb.PushBack(0)
-	cb.PushBack(1)
-	cb.PushBack(2)
-	cb.PushBack(3)
-	cb.PushBack(4)
-	cb.PushBack(5)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
 	fmt.Printf("%v_%v_%v_%v\n", cb.At(0), cb.At(1), cb.At(2), cb.At(3))
 
 	// Output: 2_3_4_5
+}
+
+func ExampleCircularBuffer_Back() {
+	cb := New(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	fmt.Printf("%v\n", cb.Back())
+
+	// Output: 5
+}
+
+func ExampleCircularBuffer_Capacity() {
+	cb := New(4)
+
+	fmt.Printf("%v\n", cb.Capacity())
+
+	// Output: 4
 }
 
 func ExampleCircularBuffer_Full() {
@@ -114,6 +139,7 @@ func TestIntegers(t *testing.T) {
 	cb := New(4)
 
 	assert.Equal(cb.Capacity(), 4, "{_, _, _, _} // 4")
+
 	cb.PushBack(0)
 	cb.PushBack(1)
 	assert.Equal(cb.ToArray(), []interface{}{0, 1}, "{0, 1}")
