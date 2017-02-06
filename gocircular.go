@@ -35,14 +35,21 @@ func (cb *CircularBuffer) Capacity() int {
 	return len(cb.buffer)
 }
 
-// Full checks if CircularBuffer is full.
-func (cb *CircularBuffer) Full() bool {
-	return cb.size == len(cb.buffer)
+// Do calls function f on each element of the CircularBuffer.
+func (cb *CircularBuffer) Do(f func(interface{})) {
+	for i := 0; i < cb.size; i++ {
+		f(cb.At(i))
+	}
 }
 
 // Empty checks if CircularBuffer has no elements.
 func (cb *CircularBuffer) Empty() bool {
 	return cb.size == 0
+}
+
+// Full checks if CircularBuffer is full.
+func (cb *CircularBuffer) Full() bool {
+	return cb.size == len(cb.buffer)
 }
 
 // Size returns number of elements in CircularBuffer.
@@ -93,13 +100,6 @@ func (cb *CircularBuffer) PushBack(value interface{}) {
 	}
 	cb.buffer[(cb.size+cb.shift)%len(cb.buffer)] = value
 	cb.size = cb.size + 1
-}
-
-// Do calls function f on each element of the CircularBuffer.
-func (cb *CircularBuffer) Do(f func(interface{})) {
-	for i := 0; i < cb.size; i++ {
-		f(cb.At(i))
-	}
 }
 
 // ToArray converts CircularBuffer to Array.

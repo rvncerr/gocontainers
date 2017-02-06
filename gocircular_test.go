@@ -45,6 +45,50 @@ func ExampleCircularBuffer_Capacity() {
 	// Output: 4
 }
 
+func ExampleCircularBuffer_Do() {
+	var do = func(element interface{}) {
+		fmt.Printf("---> %v <---\n", element)
+	}
+
+	cb := New(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	cb.Do(do)
+
+	// Output:
+	// ---> 2 <---
+	// ---> 3 <---
+	// ---> 4 <---
+	// ---> 5 <---
+}
+
+func ExampleCircularBuffer_Empty() {
+	cb := New(4)
+
+	fmt.Printf("%v\n", cb.Empty()) // true
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+
+	fmt.Printf("%v\n", cb.Empty()) // false
+
+	cb.PopFront() // [1 _ _ _]
+	cb.PopFront() // [_ _ _ _]
+
+	fmt.Printf("%v\n", cb.Empty()) // true
+
+	// Output:
+	// true
+	// false
+	// true
+}
+
 func ExampleCircularBuffer_Full() {
 	cb := New(4)
 
@@ -61,23 +105,6 @@ func ExampleCircularBuffer_Full() {
 	// Output:
 	// false
 	// true
-	// true
-}
-
-func ExampleCircularBuffer_Empty() {
-	cb := New(4)
-
-	fmt.Printf("%v\n", cb.Empty())
-	cb.PushBack(0)
-	cb.PushBack(1)
-	fmt.Printf("%v\n", cb.Empty())
-	cb.PopFront()
-	cb.PopFront()
-	fmt.Printf("%v\n", cb.Empty())
-
-	// Output:
-	// true
-	// false
 	// true
 }
 
@@ -112,27 +139,6 @@ func ExampleCircularBuffer_PushFront() {
 /* func do(element interface{}) {
 	fmt.Printf("---> %v <---\n", element)
 } */
-
-func ExampleCircularBuffer_Do() {
-	var do = func(element interface{}) {
-		fmt.Printf("---> %v <---\n", element)
-	}
-
-	cb := New(4)
-
-	cb.PushBack(0) // [0 _ _ _]
-	cb.PushBack(1) // [0 1 _ _]
-	cb.PushBack(2) // [0 1 2 _]
-	cb.PushBack(3) // [0 1 2 3]
-
-	cb.Do(do)
-
-	// Output:
-	// ---> 0 <---
-	// ---> 1 <---
-	// ---> 2 <---
-	// ---> 3 <---
-}
 
 func TestIntegers(t *testing.T) {
 	assert := assert.New(t)
