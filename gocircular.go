@@ -23,11 +23,11 @@ func (cb *CircularBuffer) At(index int) interface{} {
 }
 
 // Back returns the back element in CircularBuffer.
-func (cb *CircularBuffer) Back() interface{} {
+func (cb *CircularBuffer) Back() (interface{}, bool) {
 	if cb.Empty() {
-		panic("Calling Back() on an empty CircularBuffer.")
+		return nil, false
 	}
-	return cb.At(cb.Size() - 1)
+	return cb.At(cb.Size() - 1), true
 }
 
 // Capacity returns the maximum possible number elements in CircularBuffer.
@@ -48,11 +48,11 @@ func (cb *CircularBuffer) Empty() bool {
 }
 
 // Front returns the front element in CircularBuffer.
-func (cb *CircularBuffer) Front() interface{} {
+func (cb *CircularBuffer) Front() (interface{}, bool) {
 	if cb.Empty() {
-		panic("Calling Front() on an empty CircularBuffer.")
+		return nil, false
 	}
-	return cb.At(0)
+	return cb.At(0), true
 }
 
 // Full checks if CircularBuffer is full.
