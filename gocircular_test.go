@@ -194,6 +194,27 @@ func ExampleCircularBuffer_PushFront() {
 	// Output: [5 4 3 2]
 }
 
+func ExampleCircularBuffer_Size() {
+	cb := New(4)
+
+	fmt.Printf("%v\n", cb.Back()) // 0
+	cb.PushBack(0)                // [0 _ _ _]
+	cb.PushBack(1)                // [0 1 _ _]
+	fmt.Printf("%v\n", cb.Back()) // 2
+	cb.PushBack(2)                // [0 1 2 _]
+	cb.PushBack(3)                // [0 1 2 3]
+	fmt.Printf("%v\n", cb.Back()) // 4
+	cb.PushBack(4)                // [1 2 3 4]
+	cb.PushBack(5)                // [2 3 4 5]
+	fmt.Printf("%v\n", cb.Back()) // 4
+
+	// Output: 5
+	// 0
+	// 2
+	// 4
+	// 4
+}
+
 func TestBasic(t *testing.T) {
 	assert := assert.New(t)
 	cb := New(4)
