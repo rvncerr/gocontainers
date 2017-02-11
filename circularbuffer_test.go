@@ -25,6 +25,8 @@ func ExampleCircularBuffer_At() {
 func ExampleCircularBuffer_Back() {
 	cb := NewCircularBuffer(4)
 
+	fmt.Printf("%v\n", cb.Back())
+
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
 	cb.PushBack(2) // [0 1 2 _]
@@ -32,10 +34,11 @@ func ExampleCircularBuffer_Back() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	value, _ := cb.Back()
-	fmt.Printf("%v\n", value)
+	fmt.Printf("%v\n", cb.Back())
 
-	// Output: 5
+	// Output:
+	// <nil>
+	// 5
 }
 
 func ExampleCircularBuffer_Capacity() {
@@ -93,6 +96,8 @@ func ExampleCircularBuffer_Empty() {
 func ExampleCircularBuffer_Front() {
 	cb := NewCircularBuffer(4)
 
+	fmt.Printf("%v\n", cb.Front())
+
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
 	cb.PushBack(2) // [0 1 2 _]
@@ -100,10 +105,11 @@ func ExampleCircularBuffer_Front() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	value, _ := cb.Front()
-	fmt.Printf("%v\n", value)
+	fmt.Printf("%v\n", cb.Front())
 
-	// Output: 2
+	// Output:
+	// <nil>
+	// 2
 }
 
 func ExampleCircularBuffer_Full() {
