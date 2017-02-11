@@ -1,4 +1,4 @@
-package gocircular
+package gocontainers
 
 // CircularBuffer is the basic class in gocircular.
 // There are no public members in this struct.
@@ -8,8 +8,8 @@ type CircularBuffer struct {
 	size   int
 }
 
-// New is the constructor function for CircularBuffer.
-func New(size int) CircularBuffer {
+// NewCircularBuffer is the constructor function for CircularBuffer.
+func NewCircularBuffer(size int) CircularBuffer {
 	var cb CircularBuffer
 	cb.buffer = make([]interface{}, size)
 	cb.shift = 0

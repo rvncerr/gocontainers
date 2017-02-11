@@ -1,4 +1,4 @@
-package gocircular
+package gocontainers
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleCircularBuffer_At() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -23,7 +23,7 @@ func ExampleCircularBuffer_At() {
 }
 
 func ExampleCircularBuffer_Back() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -39,7 +39,7 @@ func ExampleCircularBuffer_Back() {
 }
 
 func ExampleCircularBuffer_Capacity() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	fmt.Printf("%v\n", cb.Capacity())
 
@@ -51,7 +51,7 @@ func ExampleCircularBuffer_Do() {
 		fmt.Printf("---> %v <---\n", element)
 	}
 
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -70,7 +70,7 @@ func ExampleCircularBuffer_Do() {
 }
 
 func ExampleCircularBuffer_Empty() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	fmt.Printf("%v\n", cb.Empty()) // true
 
@@ -91,7 +91,7 @@ func ExampleCircularBuffer_Empty() {
 }
 
 func ExampleCircularBuffer_Front() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -107,7 +107,7 @@ func ExampleCircularBuffer_Front() {
 }
 
 func ExampleCircularBuffer_Full() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0, _, _, _]
 	cb.PushBack(1) // [0, 1, _, _]
@@ -131,7 +131,7 @@ func ExampleCircularBuffer_Full() {
 }
 
 func ExampleCircularBuffer_PopBack() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -149,7 +149,7 @@ func ExampleCircularBuffer_PopBack() {
 }
 
 func ExampleCircularBuffer_PopFront() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -167,7 +167,7 @@ func ExampleCircularBuffer_PopFront() {
 }
 
 func ExampleCircularBuffer_PushBack() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -182,7 +182,7 @@ func ExampleCircularBuffer_PushBack() {
 }
 
 func ExampleCircularBuffer_PushFront() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushFront(0) // [0 _ _ _]
 	cb.PushFront(1) // [1 0 _ _]
@@ -197,7 +197,7 @@ func ExampleCircularBuffer_PushFront() {
 }
 
 func ExampleCircularBuffer_Size() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	fmt.Printf("%v\n", cb.Size()) // 0
 	cb.PushBack(0)                // [0 _ _ _]
@@ -218,7 +218,7 @@ func ExampleCircularBuffer_Size() {
 }
 
 func ExampleCircularBuffer_ToArray() {
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
@@ -234,7 +234,7 @@ func ExampleCircularBuffer_ToArray() {
 
 func TestBasic(t *testing.T) {
 	assert := assert.New(t)
-	cb := New(4)
+	cb := NewCircularBuffer(4)
 
 	assert.Equal(cb.Capacity(), 4, "{_, _, _, _} // 4")
 
