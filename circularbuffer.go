@@ -38,6 +38,11 @@ func (cb *CircularBuffer) Capacity() int {
 	return cb.capacity
 }
 
+// Clear removes all the data from CircularBuffer.
+func (cb *CircularBuffer) Clear() {
+	cb.size = 0
+}
+
 // Do calls function f on each element of the CircularBuffer.
 func (cb *CircularBuffer) Do(f func(interface{})) {
 	for i := 0; i < cb.size; i++ {

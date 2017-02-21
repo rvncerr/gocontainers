@@ -49,6 +49,28 @@ func ExampleCircularBuffer_Capacity() {
 	// Output: 4
 }
 
+func ExampleCircularBuffer_Clear() {
+	cb := NewCircularBuffer(4)
+
+	fmt.Printf("%v\n", cb.Size())
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	fmt.Printf("%v\n", cb.Size())
+	cb.Clear()
+	fmt.Printf("%v\n", cb.Size())
+
+	// Output:
+	// 0
+	// 4
+	// 0
+}
+
 func ExampleCircularBuffer_Do() {
 	var do = func(element interface{}) {
 		fmt.Printf("---> %v <---\n", element)
