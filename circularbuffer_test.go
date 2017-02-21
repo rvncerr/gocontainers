@@ -202,6 +202,54 @@ func ExampleCircularBuffer_PushFront() {
 	// Output: [5 4 3 2]
 }
 
+func ExampleCircularBuffer_Resize() {
+	cb := NewCircularBuffer(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	fmt.Printf("%v\n", cb.ToArray())
+	cb.Resize(6)   // [2 3 4 5 _ _]
+	cb.PushBack(6) // [2 3 4 5 6 _]
+	cb.PushBack(7) // [2 3 4 5 6 7]
+	cb.PushBack(8) // [3 4 5 6 7 8]
+	cb.PushBack(9) // [4 5 6 7 8 9]
+	fmt.Printf("%v\n", cb.ToArray())
+	cb.Resize(2) // [4 5]
+	fmt.Printf("%v\n", cb.ToArray())
+	cb.PushBack(10)
+	fmt.Printf("%v\n", cb.ToArray())
+
+	// Output:
+	// [2 3 4 5]
+	// [4 5 6 7 8 9]
+	// [4 5]
+	// [5 10]
+}
+
+func ExampleCircularBuffer_Shift() {
+	cb := NewCircularBuffer(4)
+
+	cb.PushBack(0) // [0 _ _ _]
+	cb.PushBack(1) // [0 1 _ _]
+	cb.PushBack(2) // [0 1 2 _]
+	cb.PushBack(3) // [0 1 2 3]
+	cb.PushBack(4) // [1 2 3 4]
+	cb.PushBack(5) // [2 3 4 5]
+
+	fmt.Printf("%v\n", cb.ToRawArray())
+	cb.Shift() // [2 3 4 5]
+	fmt.Printf("%v\n", cb.ToRawArray())
+
+	// Output:
+	// [4 5 2 3]
+	// [2 3 4 5]
+}
+
 func ExampleCircularBuffer_Size() {
 	cb := NewCircularBuffer(4)
 
