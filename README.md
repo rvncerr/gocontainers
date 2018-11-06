@@ -9,6 +9,3 @@
 
     go get github.com/rvncerr/gocontainers
 
-## Documentation
-
-As far as gocontainers is written in Go, the documentation is located at http://godoc.org/github.com/rvncerr/gocontainers.
