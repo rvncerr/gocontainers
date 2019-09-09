@@ -1,13 +1,12 @@
 package gocontainers
 
 import (
-	"fmt"
-	"testing"
-
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func ExampleCircularBuffer_At() {
+func TestCircularBufferAt(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -17,67 +16,94 @@ func ExampleCircularBuffer_At() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	fmt.Printf("%v_%v_%v_%v\n", cb.At(0), cb.At(1), cb.At(2), cb.At(3))
+	v, e := cb.At(-1)
+	assert.Nil(t, v)
+	assert.NotNil(t, e)
 
-	// Output: 2_3_4_5
+	v, e = cb.At(0)
+	assert.Equal(t, v, 2)
+	assert.Nil(t, e)
+
+	v, e = cb.At(1)
+	assert.Equal(t, v, 3)
+	assert.Nil(t, e)
+
+	v, e = cb.At(2)
+	assert.Equal(t, v, 4)
+	assert.Nil(t, e)
+
+	v, e = cb.At(3)
+	assert.Equal(t, v, 5)
+	assert.Nil(t, e)
+
+	v, e = cb.At(4)
+	assert.Nil(t, v)
+	assert.NotNil(t, e)
 }
 
-func ExampleCircularBuffer_Back() {
+func TestCircularBufferBack(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
-	fmt.Printf("%v\n", cb.Back())
+	v, e := cb.Back()
+	assert.Nil(t, v)
+	assert.NotNil(t, e)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
 	cb.PushBack(2) // [0 1 2 _]
+
+	v, e = cb.Back()
+	assert.Equal(t, v, 2)
+	assert.Nil(t, e)
+
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	fmt.Printf("%v\n", cb.Back())
-
-	// Output:
-	// <nil>
-	// 5
+	v, e = cb.Back()
+	assert.Equal(t, v, 5)
+	assert.Nil(t, e)
 }
 
-func ExampleCircularBuffer_Capacity() {
+func TestCircularBufferCapacity(t *testing.T) {
 	cb := NewCircularBuffer(4)
-
-	fmt.Printf("%v\n", cb.Capacity())
-
-	// Output: 4
+	assert.Equal(t, cb.Capacity(), 4)
 }
 
-func ExampleCircularBuffer_Clear() {
+func TestCircularBufferClear(t *testing.T) {
 	cb := NewCircularBuffer(4)
-
-	fmt.Printf("%v\n", cb.Size())
+	assert.Zero(t, cb.Size())
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
+	assert.Equal(t, cb.Size(), 2)
+
 	cb.PushBack(2) // [0 1 2 _]
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
+	assert.Equal(t, cb.Size(), 4)
 
-	fmt.Printf("%v\n", cb.Size())
 	cb.Clear()
-	fmt.Printf("%v\n", cb.Size())
-
-	// Output:
-	// 0
-	// 4
-	// 0
+	assert.Zero(t, cb.Size())
 }
 
-func ExampleCircularBuffer_Do() {
-	var do = func(element interface{}) {
-		fmt.Printf("---> %v <---\n", element)
+func TestCircularBufferDo(t *testing.T) {
+	testMap := make(map[int]bool)
+
+	var doAllGood = func(element interface{}) error {
+		testMap[element.(int)] = true
+		return nil
+	}
+
+	var doFailOn4 = func(element interface{}) error {
+		if element.(int) == 4 {
+			return errors.New("test error")
+		}
+		return nil
 	}
 
 	cb := NewCircularBuffer(4)
-
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
 	cb.PushBack(2) // [0 1 2 _]
@@ -85,80 +111,79 @@ func ExampleCircularBuffer_Do() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	cb.Do(do)
+	e := cb.Do(doAllGood)
+	assert.Nil(t, e)
+	assert.Equal(t, len(testMap), 4)
 
-	// Output:
-	// ---> 2 <---
-	// ---> 3 <---
-	// ---> 4 <---
-	// ---> 5 <---
+	_, ok := testMap[2]
+	assert.True(t, ok)
+	_, ok = testMap[3]
+	assert.True(t, ok)
+	_, ok = testMap[4]
+	assert.True(t, ok)
+	_, ok = testMap[5]
+	assert.True(t, ok)
+
+	e = cb.Do(doFailOn4)
+	assert.NotNil(t, e)
 }
 
-func ExampleCircularBuffer_Empty() {
+func TestCircularBufferEmpty(t *testing.T) {
 	cb := NewCircularBuffer(4)
-
-	fmt.Printf("%v\n", cb.Empty()) // true
+	assert.True(t, cb.Empty())
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
 
-	fmt.Printf("%v\n", cb.Empty()) // false
+	assert.False(t, cb.Empty())
 
 	cb.PopFront() // [1 _ _ _]
 	cb.PopFront() // [_ _ _ _]
 
-	fmt.Printf("%v\n", cb.Empty()) // true
-
-	// Output:
-	// true
-	// false
-	// true
+	assert.True(t, cb.Empty())
 }
 
-func ExampleCircularBuffer_Front() {
+func TestCircularBufferFront(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
-	fmt.Printf("%v\n", cb.Front())
+	v, e := cb.Front()
+	assert.Nil(t, v)
+	assert.NotNil(t, e)
 
 	cb.PushBack(0) // [0 _ _ _]
 	cb.PushBack(1) // [0 1 _ _]
+
+	v, e = cb.Front()
+	assert.Equal(t, v, 0)
+	assert.Nil(t, e)
+
 	cb.PushBack(2) // [0 1 2 _]
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	fmt.Printf("%v\n", cb.Front())
-
-	// Output:
-	// <nil>
-	// 2
+	v, e = cb.Front()
+	assert.Equal(t, v, 2)
+	assert.Nil(t, e)
 }
 
-func ExampleCircularBuffer_Full() {
+func TestCircularBufferFull(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0, _, _, _]
 	cb.PushBack(1) // [0, 1, _, _]
-
-	fmt.Printf("%v\n", cb.Full()) // false
+	assert.False(t, cb.Full())
 
 	cb.PushBack(2) // [0, 1, 2, _]
 	cb.PushBack(3) // [0, 1, 2, 3]
-
-	fmt.Printf("%v\n", cb.Full()) // true
+	assert.True(t, cb.Full())
 
 	cb.PushBack(4) // [1, 2, 3, 4]
 	cb.PushBack(5) // [2, 3, 4, 5]
-
-	fmt.Printf("%v\n", cb.Full()) // true
-
-	// Output:
-	// false
-	// true
-	// true
+	assert.True(t, cb.Full())
 }
 
-func ExampleCircularBuffer_PopBack() {
+func TestCircularBufferPopBack(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -171,12 +196,11 @@ func ExampleCircularBuffer_PopBack() {
 	cb.PopBack() // [2 3 4 _]
 	cb.PopBack() // [2 3 _ _]
 
-	fmt.Printf("%v\n", cb.ToArray())
-
-	// Output: [2 3]
+	a := cb.ToArray()
+	assert.Equal(t, a, []interface{}{2, 3})
 }
 
-func ExampleCircularBuffer_PopFront() {
+func TestCircularBufferPopFront(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -189,12 +213,11 @@ func ExampleCircularBuffer_PopFront() {
 	cb.PopFront() // [3 4 5 _]
 	cb.PopFront() // [4 5 _ _]
 
-	fmt.Printf("%v\n", cb.ToArray())
-
-	// Output: [4 5]
+	a := cb.ToArray()
+	assert.Equal(t, a, []interface{}{4, 5})
 }
 
-func ExampleCircularBuffer_PushBack() {
+func TestCircularBufferPushBack(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -204,12 +227,10 @@ func ExampleCircularBuffer_PushBack() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	fmt.Printf("%v\n", cb.ToArray())
-
-	// Output: [2 3 4 5]
+	assert.Equal(t, cb.ToArray(), []interface{}{2, 3, 4, 5})
 }
 
-func ExampleCircularBuffer_PushFront() {
+func TestCircularBufferPushFront(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushFront(0) // [0 _ _ _]
@@ -219,12 +240,10 @@ func ExampleCircularBuffer_PushFront() {
 	cb.PushFront(4) // [4 3 2 1]
 	cb.PushFront(5) // [5 4 3 2]
 
-	fmt.Printf("%v\n", cb.ToArray())
-
-	// Output: [5 4 3 2]
+	assert.Equal(t, cb.ToArray(), []interface{}{5, 4, 3, 2})
 }
 
-func ExampleCircularBuffer_Resize() {
+func TestCircularBufferResize(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -233,27 +252,23 @@ func ExampleCircularBuffer_Resize() {
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
+	assert.Equal(t, cb.ToArray(), []interface{}{2, 3, 4, 5})
 
-	fmt.Printf("%v\n", cb.ToArray())
 	cb.Resize(6)   // [2 3 4 5 _ _]
 	cb.PushBack(6) // [2 3 4 5 6 _]
 	cb.PushBack(7) // [2 3 4 5 6 7]
 	cb.PushBack(8) // [3 4 5 6 7 8]
 	cb.PushBack(9) // [4 5 6 7 8 9]
-	fmt.Printf("%v\n", cb.ToArray())
-	cb.Resize(2) // [4 5]
-	fmt.Printf("%v\n", cb.ToArray())
-	cb.PushBack(10)
-	fmt.Printf("%v\n", cb.ToArray())
+	assert.Equal(t, cb.ToArray(), []interface{}{4, 5, 6, 7, 8, 9})
 
-	// Output:
-	// [2 3 4 5]
-	// [4 5 6 7 8 9]
-	// [4 5]
-	// [5 10]
+	cb.Resize(2) // [4 5]
+	assert.Equal(t, cb.ToArray(), []interface{}{4, 5})
+
+	cb.PushBack(10)
+	assert.Equal(t, cb.ToArray(), []interface{}{5, 10})
 }
 
-func ExampleCircularBuffer_Shift() {
+func TestCircularBufferShift(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -262,38 +277,28 @@ func ExampleCircularBuffer_Shift() {
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
+	assert.Equal(t, cb.ToRawArray(), []interface{}{4, 5, 2, 3})
 
-	fmt.Printf("%v\n", cb.ToRawArray())
 	cb.Shift() // [2 3 4 5]
-	fmt.Printf("%v\n", cb.ToRawArray())
-
-	// Output:
-	// [4 5 2 3]
-	// [2 3 4 5]
+	assert.Equal(t, cb.ToRawArray(), []interface{}{2, 3, 4, 5})
 }
 
-func ExampleCircularBuffer_Size() {
+func TestCircularBufferSize(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
-	fmt.Printf("%v\n", cb.Size()) // 0
+	assert.Zero(t, cb.Size())
 	cb.PushBack(0)                // [0 _ _ _]
 	cb.PushBack(1)                // [0 1 _ _]
-	fmt.Printf("%v\n", cb.Size()) // 2
+	assert.Equal(t, cb.Size(), 2)
 	cb.PushBack(2)                // [0 1 2 _]
 	cb.PushBack(3)                // [0 1 2 3]
-	fmt.Printf("%v\n", cb.Size()) // 4
+	assert.Equal(t, cb.Size(), 4)
 	cb.PushBack(4)                // [1 2 3 4]
 	cb.PushBack(5)                // [2 3 4 5]
-	fmt.Printf("%v\n", cb.Size()) // 4
-
-	// Output:
-	// 0
-	// 2
-	// 4
-	// 4
+	assert.Equal(t, cb.Size(), 4)
 }
 
-func ExampleCircularBuffer_ToArray() {
+func TestCircularBufferToArray(t *testing.T) {
 	cb := NewCircularBuffer(4)
 
 	cb.PushBack(0) // [0 _ _ _]
@@ -303,57 +308,9 @@ func ExampleCircularBuffer_ToArray() {
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
 
-	fmt.Printf("%v\n", cb.ToArray())
+	a := cb.ToArray()
+	assert.Equal(t, a, []interface{}{2, 3, 4, 5})
 
-	// Output: [2 3 4 5]
-}
-
-func TestBasic(t *testing.T) {
-	assert := assert.New(t)
-	cb := NewCircularBuffer(4)
-
-	assert.Equal(cb.Capacity(), 4, "{_, _, _, _} // 4")
-
-	cb.PushBack(0)
-	cb.PushBack(1)
-	assert.Equal(cb.ToArray(), []interface{}{0, 1}, "{0, 1}")
-	// assert.Equal(cb.Front(), interface{}(0), "{FRONT:0, 1}")
-	// assert.Equal(cb.Back(), interface{}(1), "{0, BACK:1}")
-	assert.Equal(cb.Size(), 2, "len({0, 1}) = 2")
-
-	cb.PushBack(2)
-	cb.PushBack(3)
-	assert.Equal(cb.ToArray(), []interface{}{0, 1, 2, 3}, "{0, 1, 2, 3}")
-	// assert.Equal(cb.Front(), interface{}(0), "0 | 1 2 3")
-	assert.Equal(cb.Size(), 4, "len({0, 1, 2, 3}) = 4")
-
-	cb.PushBack(4)
-	cb.PushBack(5)
-	assert.Equal(cb.ToArray(), []interface{}{2, 3, 4, 5}, "{2, 3, 4, 5}")
-	// assert.Equal(cb.Front(), interface{}(2), "2 | 3 4 5")
-	assert.Equal(cb.Size(), 4, "len({2, 3, 4, 5}) = 4")
-
-	cb.PushBack(6)
-	cb.PushBack(7)
-	assert.Equal(cb.ToArray(), []interface{}{4, 5, 6, 7}, "{4, 5, 6, 7}")
-	// assert.Equal(cb.Front(), interface{}(4), "4 | 5 6 7")
-	assert.Equal(cb.Size(), 4, "len({4, 5, 6, 7}) = 4")
-
-	cb.PopFront()
-	cb.PopFront()
-	assert.Equal(cb.ToArray(), []interface{}{6, 7}, "{6, 7}")
-	// assert.Equal(cb.Front(), interface{}(6), "6 | 7")
-	assert.Equal(cb.Size(), 2, "len({6, 7}) = 2")
-
-	cb.PushFront(8)
-	cb.PushFront(9)
-	assert.Equal(cb.ToArray(), []interface{}{9, 8, 6, 7}, "{9, 8, 6, 7}")
-	// assert.Equal(cb.Front(), interface{}(9), "9 | 8 6 7")
-	assert.Equal(cb.Size(), 4, "len({9, 8, 6, 7}) = 4")
-
-	cb.PopBack()
-	cb.PopBack()
-	assert.Equal(cb.ToArray(), []interface{}{9, 8}, "{9, 8}")
-	// assert.Equal(cb.Front(), interface{}(9), "9 | 8")
-	assert.Equal(cb.Size(), 2, "len({9, 8}) = 2")
+	a = cb.ToRawArray()
+	assert.Equal(t, a, []interface{}{4, 5, 2, 3})
 }
