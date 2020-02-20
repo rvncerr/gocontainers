@@ -2,7 +2,7 @@ package gocontainers
 
 import "errors"
 
-// CircularBuffer is the basic class in gocircular.
+// CircularBuffer is the basic class in gocontainers.
 // There are no public members in this struct.
 type CircularBuffer struct {
 	buffer   []interface{}
@@ -12,12 +12,14 @@ type CircularBuffer struct {
 }
 
 // NewCircularBuffer is the constructor function for CircularBuffer.
-func NewCircularBuffer(size int) CircularBuffer {
+func NewCircularBuffer(capacity int) CircularBuffer {
 	var cb CircularBuffer
-	cb.buffer = make([]interface{}, size)
-	cb.capacity = size
+
+	cb.buffer = make([]interface{}, capacity)
+	cb.capacity = capacity
 	cb.shift = 0
 	cb.size = 0
+
 	return cb
 }
 
@@ -127,7 +129,7 @@ func (cb *CircularBuffer) PushFront(value interface{}) {
 
 // Resize affects capacity of CircularBuffer. TODO: Better algorithm.
 func (cb *CircularBuffer) Resize(size int) {
-	cb.Shift()
+	cb.shiftToZero()
 	if size > cb.size {
 		if len(cb.buffer) < size {
 			abuffer := make([]interface{}, size-len(cb.buffer))
@@ -139,8 +141,8 @@ func (cb *CircularBuffer) Resize(size int) {
 	cb.capacity = size
 }
 
-// Shift makes shift zero.
-func (cb *CircularBuffer) Shift() {
+// shiftToZero makes shift zero. TODO: Make private.
+func (cb *CircularBuffer) shiftToZero() {
 	var swap = func(i, j int) {
 		temp := cb.buffer[i]
 		cb.buffer[i] = cb.buffer[j]
@@ -169,9 +171,4 @@ func (cb *CircularBuffer) ToArray() []interface{} {
 		array[i], _ = cb.At(i)
 	}
 	return array
-}
-
-// ToRawArray returns CircularBuffer AS IS.
-func (cb *CircularBuffer) ToRawArray() []interface{} {
-	return cb.buffer
 }

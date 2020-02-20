@@ -277,10 +277,10 @@ func TestCircularBufferShift(t *testing.T) {
 	cb.PushBack(3) // [0 1 2 3]
 	cb.PushBack(4) // [1 2 3 4]
 	cb.PushBack(5) // [2 3 4 5]
-	assert.Equal(t, cb.ToRawArray(), []interface{}{4, 5, 2, 3})
+	assert.Equal(t, cb.buffer, []interface{}{4, 5, 2, 3})
 
-	cb.Shift() // [2 3 4 5]
-	assert.Equal(t, cb.ToRawArray(), []interface{}{2, 3, 4, 5})
+	cb.shiftToZero() // [2 3 4 5]
+	assert.Equal(t, cb.buffer, []interface{}{2, 3, 4, 5})
 }
 
 func TestCircularBufferSize(t *testing.T) {
@@ -311,6 +311,42 @@ func TestCircularBufferToArray(t *testing.T) {
 	a := cb.ToArray()
 	assert.Equal(t, a, []interface{}{2, 3, 4, 5})
 
-	a = cb.ToRawArray()
+	a = cb.buffer
 	assert.Equal(t, a, []interface{}{4, 5, 2, 3})
+}
+
+func BenchmarkCircularBuffer_PushBackUnderfill(b *testing.B) {
+	cb := NewCircularBuffer(b.N)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cb.PushBack(i)
+	}
+}
+
+func BenchmarkCircularBuffer_PushFrontUnderfill(b *testing.B) {
+	cb := NewCircularBuffer(b.N)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cb.PushFront(i)
+	}
+}
+
+func BenchmarkCircularBuffer_PushBackOverfill(b *testing.B) {
+	cb := NewCircularBuffer(4)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cb.PushBack(i)
+	}
+}
+
+func BenchmarkCircularBuffer_PushFrontOverfill(b *testing.B) {
+	cb := NewCircularBuffer(4)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		cb.PushFront(i)
+	}
 }
